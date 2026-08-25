@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-  <html lang="es">
-  <head>
+<html lang="es">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>El futuro del cromosoma Y</title>
@@ -16,15 +16,16 @@
     <a class="button nav-button" href="#conclusión">Conclusión</a>
 
     <div class="nav-controls">
-      <input type="text" id="espIpInput" placeholder="IP de ESP32 (ej. 192.168.4.1)">
-      <button onclick="setEspIP()">Conectar a Matriz</button>
+      <button onclick="connectBLE()">Conectar Bluetooth</button>
+      <button onclick="connectSerial()">Conectar por Cable</button>
+      <span id="connectionStatus" style="color: #ff4c4c; font-weight: bold; margin-left: 10px;">Desconectado</span>
     </div>
   </nav>
 
   <header>
     <h1>EL FUTURO DEL CROMOSOMA Y</h1>
     <p>Una simulación interactiva sobre evolución, pérdida genética y estabilidad cromosómica.</p>
-    <p>Ingresa la IP de tu ESP32 en la barra superior para controlar la matriz física.</p>
+    <p>Conecta mediante Bluetooth o por Cable (USB) para controlar la matriz física.</p>
     <h2>¿Está el cromosoma Y destinado a desaparecer?</h2>
   </header>
 
