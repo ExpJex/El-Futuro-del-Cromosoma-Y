@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+  <html lang="es">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El futuro del cromosoma Y</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <img src="cromosomas.png" class="icon">
+    
+    <a class="button nav-button" href="#simulación-evolutiva">Simulación</a>
+    <a class="button nav-button" href="#teoría">Teoría</a>
+    <a class="button nav-button" href="#conclusión">Conclusión</a>
+
+    <div class="nav-controls">
+      <input type="text" id="espIpInput" placeholder="IP de ESP32 (ej. 192.168.4.1)">
+      <button onclick="setEspIP()">Conectar a Matriz</button>
+    </div>
+  </nav>
+
+  <header>
+    <h1>EL FUTURO DEL CROMOSOMA Y</h1>
+    <p>Una simulación interactiva sobre evolución, pérdida genética y estabilidad cromosómica.</p>
+    <p>Ingresa la IP de tu ESP32 en la barra superior para controlar la matriz física.</p>
+    <h2>¿Está el cromosoma Y destinado a desaparecer?</h2>
+  </header>
+
+  <div class="container">
+    <section class="card" id="simulación-evolutiva">
+      <h2>Simulación evolutiva</h2>
+      <p>La matriz física y esta representación digital muestran un modelo conceptual de la cantidad relativa de material genético ancestral conservado.</p>
+
+      <img src="cromosomas.png" class="small-img">
+
+      <div class="warning">Los LEDs NO representan genes individuales. Son una escala visual simplificada.</div>
+
+      <div class="matrix" id="matrix"></div>
+
+      <div class="status">
+        <span id="timeName">Actualidad</span><br>
+        <span id="statusText">Modelo histórico</span>
+      </div>
+    
+      <h3>Línea temporal</h3>
+      <input type="range" id="timeline" min="0" max="6" step="1" value="5" oninput="changeTimeline(this.value)">
+
+      <div class="timelineLabels">
+        <span>300 Ma</span><span>180 Ma</span><span>100 Ma</span><span>50 Ma</span><span>25 Ma</span><span>Actualidad</span><span>Futuro</span>
+      </div>
+
+      <br>
+      <button onclick="startSimulation()">▶ Iniciar simulación</button>
+      <button onclick="stopSimulation()">■ Detener</button>
+      <h3>Velocidad</h3>
+      <button onclick="setSpeed(.5)">0.5×</button>
+      <button onclick="setSpeed(1)">1×</button>
+      <button onclick="setSpeed(2)">2×</button>
+      <button onclick="setSpeed(5)">5×</button>
+      <button onclick="setSpeed(10)">10×</button>
+    </section>
+
+    <section class="card">
+      <h2>Explora el futuro</h2>
+      <p>La evolución futura del cromosoma Y no puede conocerse con certeza. Compara dos escenarios.</p>
+
+      <div class="scenario">
+        <div class="scenarioBox">
+          <h3>Escenario A — Estabilización</h3>
+          <p>El conjunto reducido de genes conservados continúa manteniéndose.</p>
+          <button onclick="setScenario(1)">Explorar estabilización</button>
+        </div>
+
+        <div class="scenarioBox">
+          <h3>Escenario B — Pérdida continua</h3>
+          <p>El modelo hipotético supone que continúa la pérdida de material genético.</p>
+          <button onclick="setScenario(2)">Explorar pérdida hipotética</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Modelo conceptual</h2>
+      <canvas id="graph" class="graph"></canvas>
+      <p class="small">La gráfica representa una tendencia conceptual. No constituye una predicción cuantitativa del futuro del cromosoma Y.</p>
+    </section>
+
+    <section class="card" id="teoría">
+      <h2>¿Qué sabemos realmente?</h2>
+
+      <div class="stats">
+        <div class="stat"><strong>200–300 Ma</strong>Origen evolutivo aproximado de los cromosomas sexuales a partir de un par ancestral de autosomas. <img class="big-img radius-corners square" src="Synapsids.jfif"></div>
+        <div class="stat"><strong>≈55</strong>Genes aproximados del cromosoma Y según NHGRI. <img class="big-img radius-corners square" src="perdida-cromosoma.png"></div>
+        <div class="stat"><strong>≈900</strong>Genes aproximados del cromosoma X según NHGRI. <img class="big-img radius-corners square" src="cromosoma-x.jfif"></div>
+        <div class="stat"><strong>≈25 Ma</strong>Periodo durante el cual una parte importante del contenido ancestral del Y ha mostrado una conservación notable. <img class="big-img radius-corners square" src="comparación-cromosomas.jfif"></div>
+       </div>
+      </section>
+
+    <section class="card">
+      <h2>De ADN a cromosoma</h2>
+      <h3>ADN</h3>
+      <p>La molécula que almacena información genética.</p>
+      <h3>↓ Gen</h3>
+      <p>Una región de ADN con información funcional.</p>
+      <h3>↓ Cromosoma</h3>
+      <p>Una estructura organizada que contiene ADN.</p>
+      <h3>↓ X / Y</h3>
+      <p>Cromosomas sexuales presentes en el sistema sexual XY humano.</p>
+    </section>
+
+    <section class="card" id="conclusión">
+      <h2>¿El cromosoma Y está muriendo?</h2>
+
+      <div class="warning"><strong>Respuesta corta: no podemos afirmarlo.</strong></div>
+
+      <p>El cromosoma Y sufrió una pérdida importante de genes durante su evolución. Sin embargo, estudios comparativos muestran que gran parte de los genes ancestrales presentes en los estratos más antiguos se ha conservado durante aproximadamente los últimos 25 millones de años.</p>
+      <img src="perdida-cromosoma.png" class="big-img rectangle">
+      <p>Por eso no es correcto representar su evolución como una línea recta que inevitablemente termina en cero.</p>
+    </section>
+
+    <section class="card">
+      <h2>Entonces, ¿qué ocurrirá?</h2>
+      <h3>Sabemos</h3>
+      <p>El Y ha perdido muchos genes durante su evolución.</p>
+      <h3>También sabemos</h3>
+      <p>Una parte importante de sus genes se ha conservado durante millones de años.</p>
+      <h3>No sabemos</h3>
+      <p>Si el cromosoma Y humano permanecerá estable indefinidamente o experimentará cambios importantes en el futuro.</p>
+
+      <div class="warning">La ciencia no consiste en elegir la historia más llamativa. Consiste en distinguir entre evidencia, hipótesis y especulación.</div>
+      </section>
+
+    </div>
+
+  <footer>
+    Hecho por los estudiantes del Colegio el Carmen Teresiano: Samantha Sánchez, Dilan Pinzón, Miguel Gonzales, Iris Ardila, Juan Sebastián García y Juan Manuel Delgado 
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #05070b;
+  color: #f0f3f8;
+  line-height: 1.6;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #10233b;
+  padding: 15px 20px;
+  border-bottom: 1px solid #202b3a;
+}
+
+.navbar h2 {
+  margin: 0;
+  color: #8bc8ff;
+  font-size: 1.2rem;
+}
+
+.nav-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nav-controls input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #273445;
+  background: #020305;
+  color: white;
+  width: 250px;
+}
+
+.nav-controls button {
+  margin: 0;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+header {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: radial-gradient(circle at center, #10233b, #05070b 65%);
+}
+
+header h1 {
+  font-size: clamp(2.2rem, 7vw, 5rem);
+  margin: 0;
+  letter-spacing: 4px;
+}
+
+header p {
+  max-width: 750px;
+  font-size: 1.15rem;
+  color: #b9c3d0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.card {
+  background: #0d121a;
+  border: 1px solid #202b3a;
+  border-radius: 18px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+h2 {
+  color: #8bc8ff;
+}
+
+h3 {
+  color: #b8dfff;
+}
+
+button, .button {
+  text-decoration: none;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 18px;
+  margin: 5px;
+  background: #1c344d;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s ease
+}
+
+button:hover, .button:hover {
+  background: #295477;
+  transform: scale(1.2);
+}
+
+button.active {
+  background: #357bb5;
+}
+
+.timeline {
+  width: 100%;
+}
+
+input[type=range] {
+  width: 100%;
+}
+
+.timelineLabels {
+  display: flex;
+  justify-content: space-between;
+  color: #8795a5;
+  font-size: 12px;
+}
+
+.status {
+  text-align: center;
+  font-size: 1.3rem;
+  margin: 15px;
+}
+
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(32, 1fr);
+  gap: 3px;
+  max-width: 850px;
+  margin: 30px auto;
+  padding: 15px;
+  background: #020305;
+  border: 1px solid #273445;
+  border-radius: 12px;
+}
+
+.pixel {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: #111820;
+  transition: .15s;
+}
+
+.pixel.x {
+  background: #267cff;
+  box-shadow: 0 0 8px #267cff;
+}
+
+.pixel.y {
+  background: #26d98b;
+  box-shadow: 0 0 8px #26d98b;
+}
+
+.graph {
+  width: 100%;
+  height: 280px;
+  background: #080c12;
+  border-radius: 12px;
+  border: 1px solid #202b3a;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #111923;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease-in;
+}
+
+.stat:hover {
+    transform: scale(1.1);
+}
+
+.stat strong {
+  display: block;
+  font-size: 2rem;
+  color: #72baff;
+}
+
+.warning {
+  padding: 18px;
+  border-left: 4px solid #e4b85a;
+  background: #19160d;
+  color: #e9dcc0;
+  border-radius: 8px;
+}
+
+.scenario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.scenarioBox {
+  padding: 20px;
+  border: 1px solid #293747;
+  border-radius: 14px;
+}
+
+.small-img {
+    display: block;
+    width: 50%;
+    height: auto;
+    margin: auto auto;
+}
+
+.big-img {
+    display: block;
+    width: 90%;
+    object-fit: cover;
+    height: auto;
+    margin: 10px auto; 
+}
+
+.icon {
+    width: auto;
+    height: 2rem;
+}
+
+.square {
+  aspect-ratio: 1/1;
+}
+
+.rectangle {
+  aspect-ratio: 16/9;
+}
+
+.radius-corners {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.25)
+}
+
+footer {
+  text-align: center;
+  padding: 40px;
+  color: #687587;
+}
+
+.small {
+  font-size: .9rem;
+  color: #8795a5;
+}
+
+@media(max-width:700px) {
+  .scenario {
+    grid-template-columns: 1fr;
+  }
+  .matrix {
+    gap: 2px;
+    padding: 8px;
+  }
+  .nav-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+  .nav-controls input {
+    width: 100%;
+  }
+}
