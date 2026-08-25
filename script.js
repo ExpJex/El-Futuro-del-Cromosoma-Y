@@ -1,24 +1,106 @@
-let espIP = "";
+let bluetoothServer = null;
+let bleCharacteristic = null;
+let serialPort = null;
+let connectionType = null;
+
+const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a9";
+
 let currentTimeline = 5;
 let currentScenario = 0;
 let currentSpeed = 1;
-let simulationTimer = null;
-let isConnecting = false;
 
-const yHistorical = [8, 7, 5, 4, 3, 3];
+async function connectBLE() {
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ name: 'CromosomaY_Feria' }],
+      optionalServices: [SERVICE_UUID]
+    });
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService(SERVICE_UUID);
+    bleCharacteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+    
+    await bleCharacteristic.startNotifications();
+    bleCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
+      const decoder = new TextDecoder('utf-8');
+      const value = decoder.decode(event.target.value);
+      handleStateData(value);
+    });
 
-async function setEspIP() {
-  const ipInput = document.getElementById("espIpInput").value.trim();
-  const btn = document.querySelector(".nav-controls button");
-  if (ipInput) {
-    espIP = ipInput.startsWith("http") ? ipInput : "http://" + ipInput;
-    if (btn) {
-      btn.textContent = "Conectando...";
-      btn.style.backgroundColor = "#e4b85a";
-    }
-    isConnecting = true;
-    await updateState();
+    connectionType = 'ble';
+    document.getElementById("connectionStatus").textContent = "Conectado (Bluetooth)";
+    document.getElementById("connectionStatus").style.color = "#26d98b";
+  } catch (error) {
+    document.getElementById("connectionStatus").textContent = "Error Bluetooth";
+    document.getElementById("connectionStatus").style.color = "#ff4c4c";
   }
+}
+
+async function connectSerial() {
+  try {
+    serialPort = await navigator.serial.requestPort();
+    await serialPort.open({ baudRate: 115200 });
+    
+    connectionType = 'serial';
+    document.getElementById("connectionStatus").textContent = "Conectado (Cable)";
+    document.getElementById("connectionStatus").style.color = "#26d98b";
+
+    readSerialLoop();
+  } catch (error) {
+    document.getElementById("connectionStatus").textContent = "Error Cable";
+    document.getElementById("connectionStatus").style.color = "#ff4c4c";
+  }
+}
+
+async function readSerialLoop() {
+  const textDecoder = new TextDecoderStream();
+  const readableStreamClosed = serialPort.readable.pipeTo(textDecoder.writable);
+  const reader = textDecoder.readable.getReader();
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (value) {
+        try {
+          let jsonStart = value.indexOf("{");
+          let jsonEnd = value.lastIndexOf("}");
+          if (jsonStart !== -1 && jsonEnd !== -1) {
+            let jsonStr = value.substring(jsonStart, jsonEnd + 1);
+            handleStateData(jsonStr);
+          }
+        } catch(e) {}
+      }
+    }
+  } catch (error) {
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+async function sendCommand(cmd) {
+  if (connectionType === 'ble' && bleCharacteristic) {
+    const encoder = new TextEncoder();
+    await bleCharacteristic.writeValue(encoder.encode(cmd));
+  } else if (connectionType === 'serial' && serialPort && serialPort.writable) {
+    const textEncoder = new TextEncoder();
+    const writer = serialPort.writable.getWriter();
+    await writer.write(textEncoder.encode(cmd + "\n"));
+    writer.releaseLock();
+  }
+}
+
+function handleStateData(jsonStr) {
+  try {
+    const data = JSON.parse(jsonStr);
+    currentTimeline = data.timeline;
+    currentScenario = data.scenario;
+    currentSpeed = data.speed;
+    document.getElementById("timeline").value = data.timeline;
+    document.getElementById("timeName").textContent = data.timelineName;
+    renderMatrix(data.xWidth, data.yWidth);
+    updateStatus(data);
+  } catch(e) {}
 }
 
 function createMatrix() {
@@ -49,40 +131,6 @@ function renderMatrix(xWidth, yWidth) {
   });
 }
 
-async function updateState() {
-  if (!espIP) return;
-  try {
-    const response = await fetch(espIP + "/api/state");
-    const data = await response.json();
-    currentTimeline = data.timeline;
-    currentScenario = data.scenario;
-    currentSpeed = data.speed;
-    document.getElementById("timeline").value = data.timeline;
-    document.getElementById("timeName").textContent = data.timelineName;
-    renderMatrix(data.xWidth, data.yWidth);
-    updateStatus(data);
-
-    if (isConnecting) {
-      const btn = document.querySelector(".nav-controls button");
-      if (btn) {
-        btn.textContent = "Conectado";
-        btn.style.backgroundColor = "#26d98b";
-      }
-      isConnecting = false;
-    }
-  } catch(error) {
-    if (isConnecting) {
-      const btn = document.querySelector(".nav-controls button");
-      if (btn) {
-        btn.textContent = "Error";
-        btn.style.backgroundColor = "#ff4c4c";
-      }
-      isConnecting = false;
-      espIP = "";
-    }
-  }
-}
-
 function updateStatus(data) {
   const text = document.getElementById("statusText");
   if(data.scenario === 1) {
@@ -99,33 +147,23 @@ function updateStatus(data) {
 }
 
 async function changeTimeline(value) {
-  if (!espIP) return;
-  await fetch(espIP + "/api/timeline?value=" + value);
-  updateState();
+  await sendCommand("timeline:" + value);
 }
 
 async function setScenario(value) {
-  if (!espIP) return;
-  await fetch(espIP + "/api/scenario?value=" + value);
-  updateState();
+  await sendCommand("scenario:" + value);
 }
 
 async function setSpeed(value) {
-  if (!espIP) return;
-  await fetch(espIP + "/api/speed?value=" + value);
-  updateState();
+  await sendCommand("speed:" + value);
 }
 
 async function startSimulation() {
-  if (!espIP) return;
-  await fetch(espIP + "/api/start");
-  updateState();
+  await sendCommand("start");
 }
 
 async function stopSimulation() {
-  if (!espIP) return;
-  await fetch(espIP + "/api/stop");
-  updateState();
+  await sendCommand("stop");
 }
 
 function drawGraph() {
@@ -184,5 +222,4 @@ function drawGraph() {
 
 createMatrix();
 drawGraph();
-setInterval(updateState, 500);
 window.addEventListener("resize", drawGraph);
