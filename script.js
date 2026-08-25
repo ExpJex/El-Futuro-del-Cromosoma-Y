@@ -3,14 +3,21 @@ let currentTimeline = 5;
 let currentScenario = 0;
 let currentSpeed = 1;
 let simulationTimer = null;
+let isConnecting = false;
 
 const yHistorical = [8, 7, 5, 4, 3, 3];
 
-function setEspIP() {
+async function setEspIP() {
   const ipInput = document.getElementById("espIpInput").value.trim();
+  const btn = document.querySelector(".nav-controls button");
   if (ipInput) {
     espIP = ipInput.startsWith("http") ? ipInput : "http://" + ipInput;
-    updateState();
+    if (btn) {
+      btn.textContent = "Conectando...";
+      btn.style.backgroundColor = "#e4b85a";
+    }
+    isConnecting = true;
+    await updateState();
   }
 }
 
@@ -54,8 +61,25 @@ async function updateState() {
     document.getElementById("timeName").textContent = data.timelineName;
     renderMatrix(data.xWidth, data.yWidth);
     updateStatus(data);
+
+    if (isConnecting) {
+      const btn = document.querySelector(".nav-controls button");
+      if (btn) {
+        btn.textContent = "Conectado";
+        btn.style.backgroundColor = "#26d98b";
+      }
+      isConnecting = false;
+    }
   } catch(error) {
-    console.log(error);
+    if (isConnecting) {
+      const btn = document.querySelector(".nav-controls button");
+      if (btn) {
+        btn.textContent = "Error";
+        btn.style.backgroundColor = "#ff4c4c";
+      }
+      isConnecting = false;
+      espIP = "";
+    }
   }
 }
 
